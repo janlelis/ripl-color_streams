@@ -1,0 +1,21 @@
+== Description
+This {ripl}[http://github.com/cldwalker/ripl] plugin colorizes your +stdout+ and +stderr+ streams.
+
+== Install
+Install the gem with:
+
+  sudo gem install ripl-color_streams
+
+== Usage
+
+Add to your ~/.riplrc
+
+  require 'ripl/color_streams'
+
+The default colors are :dark_gray (1;30) and :light_red (1;31). You can change them like this:
+
+  Ripl.config[:color_streams_stdout] = :light_gray
+  Ripl.config[:color_streams_stderr] = :red
+
+
+J-_-L

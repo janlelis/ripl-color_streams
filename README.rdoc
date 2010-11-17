@@ -17,5 +17,6 @@ The default colors are :dark_gray (1;30) and :light_red (1;31). You can change t
   Ripl.config[:color_streams_stdout] = :light_gray
   Ripl.config[:color_streams_stderr] = :red
 
+You can get a list of available colors with <tt>Ripl::ColorStreams::COLORS</tt>. It's also possible to directly set an ansi-escape string as value.
 
 J-_-L

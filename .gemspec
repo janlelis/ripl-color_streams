@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.summary = "A ripl plugin to colorize stdout and stderr."
   s.description =  "This ripl plugin colorizes your stdout and stderr streams."
   s.required_rubygems_version = ">= 1.3.6"
-  s.add_dependency 'ripl', '>= 0.2.3'
+  s.add_dependency 'ripl', '>= 0.2.7'
   s.files = Dir.glob(%w[{lib,test}/**/*.rb bin/* [A-Z]*.{txt,rdoc} ext/**/*.{rb,c} **/deps.rip]) + %w{Rakefile .gemspec}
   s.extra_rdoc_files = ["README.rdoc", "LICENSE.txt"]
   s.license = 'MIT'

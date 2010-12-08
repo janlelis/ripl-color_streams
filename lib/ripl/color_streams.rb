@@ -24,20 +24,9 @@ module Ripl
     }
 
     def before_loop
-      # patch stream output (but do not activate)
-      $stdout.instance_eval do
-        alias real_write write
-        def color_write(*args)
-          Ripl::ColorStreams.write_stream :stdout, *args
-        end
-      end
-
-      $stderr.instance_eval do
-        alias real_write write
-        def color_write(*args)
-          Ripl::ColorStreams.write_stream :stderr, *args
-        end
-      end
+      # patch $stdout/$stderr
+      Ripl::ColorStreams.patch_stream :stdout
+      Ripl::ColorStreams.patch_stream :stderr
 
       # default settings
       Ripl.config[:color_streams_stdout] ||= :dark_gray
@@ -48,12 +37,12 @@ module Ripl
     end
 
     def loop_eval(input)
-      $stdout.instance_eval do alias write color_write end
-      $stderr.instance_eval do alias write color_write end
+      Ripl::ColorStreams.set_stream_status :stdout, true
+      Ripl::ColorStreams.set_stream_status :stderr, true
       super
     ensure
-      $stdout.instance_eval do alias write real_write end
-      $stderr.instance_eval do alias write real_write end
+      Ripl::ColorStreams.set_stream_status :stdout, false
+      Ripl::ColorStreams.set_stream_status :stderr, false
     end
 
     class << self
@@ -65,10 +54,39 @@ module Ripl
 
         stream.real_write color_code ? "\e[#{ color_code }m#{ data }\e[0;0m" : data.to_s
       end
+
+      # patch stream output (but do not activate)
+      def patch_stream(stream_name)
+        stream = Object.const_get stream_name.to_s.upcase
+
+        stream.instance_eval do
+          alias real_write write
+          def color_write(*args) # define_method is not defined for singletons :/
+            stream_name = (self == $stdout) ? :stdout : :stderr
+            Ripl::ColorStreams.write_stream stream_name, *args
+          end
+        end
+      end
+
+      def set_stream_status(stream_name, true_or_false)
+        stream = Object.const_get stream_name.to_s.upcase
+
+        # check if stream object has changed
+        unless stream.respond_to?(:real_write) && stream.respond_to?(:color_write)
+          Ripl::ColorStreams.patch_stream stream_name
+        end
+
+        # (de)activate
+        if true_or_false
+          stream.instance_eval do alias write color_write end
+        else
+          stream.instance_eval do alias write real_write  end
+        end
+      end
     end
   end
 end
 
-Ripl::Shell.send :include, Ripl::ColorStreams if defined? Ripl::Shell
+Ripl::Shell.send :include, Ripl::ColorStreams
 
 # J-_-L

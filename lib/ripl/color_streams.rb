@@ -28,10 +28,6 @@ module Ripl
       Ripl::ColorStreams.patch_stream :stdout
       Ripl::ColorStreams.patch_stream :stderr
 
-      # default settings
-      Ripl.config[:color_streams_stdout] ||= :dark_gray
-      Ripl.config[:color_streams_stderr] ||= :light_red
-
       # call ripl / next plugin
       super
     end
@@ -88,5 +84,9 @@ module Ripl
 end
 
 Ripl::Shell.send :include, Ripl::ColorStreams
+
+# default settings
+Ripl.config[:color_streams_stdout] ||= :dark_gray
+Ripl.config[:color_streams_stderr] ||= :light_red
 
 # J-_-L

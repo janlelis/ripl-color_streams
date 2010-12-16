@@ -2,7 +2,7 @@ require 'ripl'
 
 module Ripl
   module ColorStreams
-    VERSION = '0.1.1'
+    VERSION = '0.1.2'
     COLORS = {
       :nothing      => '0;0',
       :black        => '0;30',
